@@ -1,6 +1,12 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 public class MainClass{
-    public static void main(String argv[]){
-        Simulator ss = new Simulator();
+    public static void main(String argv[]) throws IOException {
+        /*Simulator ss = new Simulator();
         ss.FutureEventList = new EventList();
         ss.Customers = new Queue();
         ss.stream=new Rand();
@@ -18,6 +24,6 @@ public class MainClass{
             else
                 ss.ProcessDeparture(evt);
         }
-        ss.ReportGeneration();
+        ss.ReportGeneration();*/
     }
 }
