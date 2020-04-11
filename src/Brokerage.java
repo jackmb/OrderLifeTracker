@@ -3,12 +3,12 @@ import java.util.Random;
 
 public class Brokerage {
 
-    ArrayList<Client> clients = new ArrayList<>();
+    ArrayList<Population.Client> clients = new ArrayList<>();
 
     public Brokerage(){
         setClients(clients);
     }
-    public static double randomNetworth(int id){
+    public static double randomNetworth(int id) { //Accomodates PDT rule
         Random r = new Random();
         if (id >= 0 && id < 3574){ // top 57% , unlimited trades
             return r.nextGaussian() * 5000.0 + 30000.0;
@@ -17,10 +17,10 @@ public class Brokerage {
         }
 
     }
-    public static void setClients(ArrayList<Client> clients) {
+    public static void setClients(ArrayList<Population.Client> clients) {
         int i = -1;
         while(i++ < 6270){
-            clients.add(new Client(i, randomNetworth(i)));
+            clients.add(Population.createClient());
             System.out.println(clients.get(i));
         }
 
