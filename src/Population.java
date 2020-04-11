@@ -19,7 +19,7 @@ public class Population {
                 double x = 1;
                 while (x < 25000.0) x = Math.abs(r.nextGaussian() * 37500.0 + 4166.33);
                 return x;
-            } else {
+            } else{
                 double x = 25000.0;
                 while (x >= 25000.0) x = Math.abs(r.nextGaussian() * 12500.0 + 4166.33);
                 return x;
