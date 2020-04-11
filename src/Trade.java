@@ -6,6 +6,7 @@ public class Trade {
     double price;
     int shares;
     String exchange;
+    Population.Client client;
 
     public Trade() {
         timestamp = 0;

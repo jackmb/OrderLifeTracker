@@ -6,10 +6,10 @@ public class Rand {
     long x;
 
     public Rand(){
-        x =123457 ;
+        x = 123457 ;
     }
 
-    double next(){
+    double next() {
         // Calculate next value in sequence.
         x = ((a * x) + c) % m;
         // Return its 0-to-1 value.

@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class Brokerage {
 
-    public ArrayList<Client> clients = new ArrayList<>();
+    public ArrayList<Population.Client> clients = new ArrayList<Population.Client>();
     public ArrayList<Trade> trades = new ArrayList<>();
 
     public Brokerage(){
@@ -32,23 +32,10 @@ public class Brokerage {
 
     }
 
-    public static double randomNetworth(int id){
-        Random r = new Random();
-        if (id >= 0 && id < 3574){ // top 57% , unlimited trades
-            double x = 1;
-            while (x < 25000.0) x = Math.abs(r.nextGaussian() * 37500.0 + 4166.33);
-            return x;
-        }else{
-            double x = 25000.0;
-            while (x >= 25000.0) x = Math.abs(r.nextGaussian() * 12500.0 + 4166.33);
-            return x;
-        }
-    }
-    public static void setClients(ArrayList<Client> clients) {
+    public static void setClients(ArrayList<Population.Client> clients) {
         int i = -1;
         while(i++ < 6270){
-            clients.add(new Client(i, randomNetworth(i)));
-            //System.out.println(clients.get(i));
+            clients.add(Population.createClient());
         }
 
     }
