@@ -10,8 +10,8 @@ public class Trade {
     public Trade() {
         timestamp = 0;
         symbol = "ABC";
-        price = 10.00;
-        shares = 10;
+        price = 0.0;
+        shares = 0;
         exchange = "NYSE";
     }
 

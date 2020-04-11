@@ -2,21 +2,18 @@ import java.util.ArrayList;
 
 public class Order {
     private ArrayList<Event> history;
-    private char orderType; // 'i', 'm', or 'l' for "iceberg", "market", or "limit" respectively.
     private double lifetime;
     private boolean dead;
 
     public Order() {
         history = new ArrayList<>();
-        orderType = 'x';
         dead = false;
         lifetime = 0.0;
     }
 
-    public Order(Event conceptionEvent, char _orderType) {
+    public Order(Event conceptionEvent) {
         history = new ArrayList<>(); //originally was ArrayList<Event> but IDE was giving me a warning ¯\_(ツ)_/¯
         this.history.add(conceptionEvent);
-        orderType = _orderType;
         dead = false;
         lifetime = 0.0;
     }
