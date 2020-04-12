@@ -1,21 +1,24 @@
+import java.util.ArrayList;
 import java.util.Random;
 
 public class Population {
 
     public static class Client {
-        private int id, numberOfTrades = 0;
-        private boolean pdt;
-        private double netWorth;
+        private int id;
+        public int numberOfTrades = 0;
+        public boolean pdt;
+        public double netWorth;
+        public ArrayList<Trade> tradesmade;
 
         private Client(int _id) {
             id = _id;
             netWorth = randomNetworth(id);
-            pdt = (netWorth <= 25000.00) ? true : false;
+            pdt = netWorth <= 25000.00;
+            tradesmade = new ArrayList<>();
         }
 
         public static double randomNetworth(int id){
-            Rand rand = new Rand();
-            Random r = new Random((long)rand.next());
+            Random r = new Random();
             if (id >= 0 && id < 3574){ // top 57% , unlimited trades
                 double x = 1;
                 while (x < 25000.0) x = Math.abs(r.nextGaussian() * 37500.0 + 4166.33);
