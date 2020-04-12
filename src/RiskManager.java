@@ -32,7 +32,24 @@ public class RiskManager {
         }
     }
 
-    private void tooManySharesCheck(Trade t) {
+    private void tooManySharesCheck(Trade t, Simulator sim) {
+        if(t.shares > sim.maxSharesAllowed) {
+            t.tooRisky = true;
+        }
+    }
 
+    private void weirdPriceCheck(Trade t, Simulator sim) {
+        double upperBound = sim.avgPrice + (3 * sim.stdDevPrice);
+        double lowerBound = sim.avgPrice - (3 * sim.stdDevPrice);
+        if(t.price < lowerBound || t.price > upperBound) {
+            t.tooRisky = true;
+        }
+    }
+
+    public void checkRisk(Trade t, Simulator sim) {
+        randomRisk(t);
+        cantAffordBuyRisk(t);
+        tooManySharesCheck(t, sim);
+        weirdPriceCheck(t, sim);
     }
 }
