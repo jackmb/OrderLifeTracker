@@ -6,7 +6,7 @@ public class EventList{
     public int size (){
         return event_list.size();
     }
-    public EventList(){
+    public EventList()  {
         event_list = new PriorityQueue<Event>(100,
                 new Comparator<Event>(){
                     public int compare(Event e1, Event e2){

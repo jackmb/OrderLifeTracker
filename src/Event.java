@@ -1,4 +1,4 @@
-public class Event{
+public class Event {
     private double time ;
     private int type;
     /*
