@@ -11,7 +11,7 @@ public class Brokerage {
 
     public static ArrayList<Population.Client> clients = new ArrayList<>();
     private static ArrayList<Trade> trades = new ArrayList<>();
-
+    //private static RiskManager manager = new RiskManager();
     public Brokerage(){
         setClients(clients);
     }
@@ -24,7 +24,9 @@ public class Brokerage {
                 // use comma as separator
                 if(line.contains("TRADE NB") || line.contains("TRADE")){
                     Trade t = new Trade(line);
+                    //manager.checkRisk(t);
                     trades.add(t);
+
                 }
             }
         } catch (IOException e) {
@@ -45,13 +47,12 @@ public class Brokerage {
             Trade trade = tradescopy.get(i);
 
             Population.Client client = clients.get(clientid);
-
-            if(tradescopy.get(i).tradenb){
+            double tradeDirection = (trade.tradeType)? 1.0: -1.0;
+            double commisioncost = Math.max(trade.shares / 10, 10);
+            double transactioncost = ((trade.price*trade.shares)+commisioncost) * tradeDirection;
+            if(trade.tradenb){
                 boolean tradeFilled = false;
                 while(!tradeFilled){
-                    clientid = getClientID(randomint.next());
-                    double tradeDirection = (trade.tradeType)? 1.0: -1.0;
-                    double transactioncost = (trade.price*trade.shares)+10.00 * tradeDirection;
                     if(!client.pdt){
                         if( transactioncost < client.netWorth) {
                             client.netWorth -= transactioncost;
@@ -60,10 +61,11 @@ public class Brokerage {
                             }
                             client.numberOfTrades++;
                             client.tradesmade.add(trade);
-                            tradescopy.remove(clientid);
+                            //tradescopy.remove(clientid);
                             tradeFilled = true;
+                            clients.set(clientid, client);
                         }else{
-                            //
+                            // skip to the next client
                         }
                     }else{
                         if(client.numberOfTrades < 3){
@@ -71,24 +73,31 @@ public class Brokerage {
                                 client.netWorth -= transactioncost;
                                 client.numberOfTrades++;
                                 client.tradesmade.add(trade);
-                                tradescopy.remove(clientid);
+                                //tradescopy.remove(clientid);
                                 tradeFilled = true;
+                                clients.set(clientid, client);
                             }else{
-                                //
+                                // skip to the next client
                             }
                         }else{
-                            //
+                            // skip to the next client
                         }
                     }
+                    clientid = getClientID(randomint.next());
+                    client = clients.get(clientid);
                 }
             }else{
-                //pricetimepriority check
-                //afforability  check
+                if(trade.tradeType){
+                    if(client.netWorth < transactioncost){
+                        //System.out.println("Trade is of type TRADE and not enough money.");
+                    }else{
+                        //System.out.println("Price Time Priority, the market price has changed, order cannot be filled.");
+                    }
+                }else{
+                    //System.out.println("Price Time Priority, the market price has changed, order cannot be filled.");
+                }
             }
 
-            //Population.Client client = clients.get(clientid);
-
-            clients.set(clientid, clients.get(clientid));
         }
     }
 
@@ -96,13 +105,14 @@ public class Brokerage {
         int i = -1;
         while(i++ < 6270){
             clients.add(Population.createClient());
-            System.out.println(clients.get(i));
+            //System.out.println(clients.get(i));
         }
 
     }
     public static void main (String [] args){
         Brokerage b = new Brokerage();
         setClients(b.clients);
+
         /*int count = 0, count1 = 0, count2 = 0;
         int a = 0;
         int i = -1;
@@ -123,7 +133,8 @@ public class Brokerage {
         System.out.println("\nMore than 25k "+count +" Less than 25k "+count1+ " Total number of clients "+ count2);
         System.out.println(a/count);*/
         readTrades(b.trades);
-        System.out.println(b.trades);
+        assignTrade();
+        System.out.println(b.clients);
         //assignTrade();
     }
 }
