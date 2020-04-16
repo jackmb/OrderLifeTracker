@@ -1,4 +1,6 @@
 
+import com.sun.deploy.cache.BaseLocalApplicationProperties;
+
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
@@ -9,7 +11,8 @@ import java.util.Random;
 
 public class Brokerage {
 
-    public static ArrayList<Population.Client> clients = new ArrayList<>();
+
+    public ArrayList<Population.Client> clients = new ArrayList<>();
     private static ArrayList<Trade> trades = new ArrayList<>();
     //private static RiskManager manager = new RiskManager();
     public Brokerage(){
@@ -34,57 +37,99 @@ public class Brokerage {
         }
     }
     public static int getClientID(double random){
-        return ((int) (random*1000000000.0)) % 6270;
+        return ((int) (random*100000.0)) % 6270;
     }
 
-    public static void assignTrade(){
+    public void assignTrade(){
         Rand randomint = new Rand();
         ArrayList<Trade> tradescopy = trades;
+        int x = 0, y = 0;
         for(int i = 0; i < tradescopy.size(); i++){
-
-            int clientid = getClientID(randomint.next());
 
             Trade trade = tradescopy.get(i);
 
+            int clientid = getClientID(randomint.next());
             Population.Client client = clients.get(clientid);
-            double tradeDirection = (trade.tradeType)? 1.0: -1.0;
+
+            double tradeDirection = (trade.tradeType)? -1.0: 1.0;
             double commisioncost = Math.max(trade.shares / 10, 10);
             double transactioncost = ((trade.price*trade.shares)+commisioncost) * tradeDirection;
+
             if(trade.tradenb){
                 boolean tradeFilled = false;
+
                 while(!tradeFilled){
+
                     if(!client.pdt){
-                        if( transactioncost < client.netWorth) {
-                            client.netWorth -= transactioncost;
+                        if( Math.abs(transactioncost) < client.netWorth) {
+                            client.netWorth = client.netWorth - transactioncost;
+
                             if (client.netWorth < 25000.0) {
                                 client.pdt = true;
+                            }else{
+                                client.pdt = false;
                             }
                             client.numberOfTrades++;
                             client.tradesmade.add(trade);
                             //tradescopy.remove(clientid);
                             tradeFilled = true;
+                            //System.out.println(client.toString());
+
                             clients.set(clientid, client);
+                            if(clientid == 4269) {
+                                System.out.println(client);
+                            }
+                            //System.out.println("Number of trades filled: "+ ++x +" not filled: "+y);
+                            break;
                         }else{
                             // skip to the next client
+                            clientid = getClientID(randomint.next());
+                            //System.out.println(clientid);
+                            client = clients.get(clientid);
+                            //System.out.println("Number of trades filled: "+ x+" not filled: "+ ++y);
                         }
                     }else{
                         if(client.numberOfTrades < 3){
-                            if( transactioncost < client.netWorth) {
-                                client.netWorth -= transactioncost;
+                            if( Math.abs(transactioncost) < client.netWorth) {
+                                client.netWorth = client.netWorth - transactioncost;
+                                if (client.netWorth > 25000.0) {
+                                    client.pdt = false;
+                                }else{
+                                    client.pdt = true;
+                                }
                                 client.numberOfTrades++;
                                 client.tradesmade.add(trade);
                                 //tradescopy.remove(clientid);
-                                tradeFilled = true;
+                                //tradeFilled = true;
+
                                 clients.set(clientid, client);
+                                //System.out.println("Number of trades filled: "+ ++x+" not filled: "+y);
+                                if(clientid == 4269) {
+                                    System.out.println(client);
+                                }
+                                break;
                             }else{
                                 // skip to the next client
+                                clientid = getClientID(randomint.next());
+                                //System.out.println(clientid);
+                                client = clients.get(clientid);
+                                //System.out.println("Number of trades filled: "+x+" not filled: "+ ++y);
                             }
                         }else{
                             // skip to the next client
+                            clientid = getClientID(randomint.next());
+                            //System.out.println(clientid);
+                            client = clients.get(clientid);
+                            //System.out.println("Number of trades filled: "+x+" not filled: "+ ++y);
                         }
                     }
-                    clientid = getClientID(randomint.next());
-                    client = clients.get(clientid);
+                    if(clientid == 4269) {
+                        System.out.println(client);
+                    }
+                    //clientid = getClientID(randomint.next());
+                    //System.out.println(clientid);
+                    //client = clients.get(clientid);
+                    //break;
                 }
             }else{
                 if(trade.tradeType){
@@ -111,7 +156,7 @@ public class Brokerage {
     }
     public static void main (String [] args){
         Brokerage b = new Brokerage();
-        setClients(b.clients);
+        //setClients(b.clients);
 
         /*int count = 0, count1 = 0, count2 = 0;
         int a = 0;
@@ -133,8 +178,9 @@ public class Brokerage {
         System.out.println("\nMore than 25k "+count +" Less than 25k "+count1+ " Total number of clients "+ count2);
         System.out.println(a/count);*/
         readTrades(b.trades);
-        assignTrade();
-        System.out.println(b.clients);
+        b.assignTrade();
+        //System.out.println(b.clients);
+        //System.out.println(Math.max(b.clients.));
         //assignTrade();
     }
 }
