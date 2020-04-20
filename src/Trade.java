@@ -8,11 +8,13 @@ public class Trade {
     double price;
     int shares;
     String exchange;
+    boolean tooRisky;
     boolean tradenb;
     Population.Client client;
     boolean tradeType;
     long time;
     long timeelapsed;
+
     public Trade() {
         timestamp = 0;
         symbol = "ABC";

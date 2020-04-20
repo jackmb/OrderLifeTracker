@@ -1,7 +1,21 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Data {
     private ArrayList<Double> data = new ArrayList<Double>();
+    private String metricLabel;
+    private Double metric;
+
+    public void recordMetric(String label, Double metric) {
+        metricLabel = label;
+        this.metric = metric;
+    }
+
+    public void recordMetric(String label, ArrayList<Double> dataSet) {
+        metricLabel = label;
+        this.data = dataSet;
+        this.metric = this.mean();
+    }
 
     public void setData(ArrayList<Double> newData) {
         this.data = newData;
@@ -13,30 +27,71 @@ public class Data {
         }
     }
 
-    public void addData(double newData) {
+    public void addData(Double newData) {
         this.data.add(newData);
     }
 
-    public double mean() {
-        double sum = 0.0;
+    public Double mean() {
+        Double sum = 0.0;
         for(int i = 0; i < this.data.size(); i++) {
+            //System.out.println(this.data.get(i));
             sum += this.data.get(i);
         }
         return sum / this.data.size();
     }
 
-    public double stddev() {
-        ArrayList<Double> temp = new ArrayList<>();
-        double m = this.mean();
+    public Double meanPrint() {
+        Double sum = 0.0;
         for(int i = 0; i < this.data.size(); i++) {
-            double meanDiff = Math.abs(this.data.get(i) - m);
-            temp.add(meanDiff * meanDiff);
+            System.out.println(this.data.get(i));
+            sum += this.data.get(i);
         }
-        double sum = 0.0;
-        for(int i = 0; i < temp.size(); i++) {
-            sum += temp.get(i);
-        }
-        sum /= temp.size();
-        return Math.sqrt(sum);
+        return sum / this.data.size();
     }
+
+    public Double stddev() {
+        double sum = 0.0, standardDeviation = 0.0;
+        int length = data.size();
+        for(double val : data) {
+            sum += val;
+        }
+        double mean = sum/length;
+        for(double val: data) {
+            standardDeviation += Math.pow(val - mean, 2);
+        }
+        return Math.sqrt(standardDeviation/length);
+    }
+
+    public static class TriDist<T> {
+        public T triDist(T x, Double chanceX, T y, Double chanceY, T z, Double chanceZ) {
+            Double total = chanceX + chanceY + chanceZ;
+            chanceX = (chanceX / total) * 100;
+            chanceY = (chanceY / total) * 100;
+            int rand = new Random().nextInt(100);
+            if(rand <= chanceX) {
+                return x;
+            } else if(rand <= chanceY) {
+                return y;
+            } else {
+                return z;
+            }
+        }
+    }
+
+    public String toString() {
+        return this.metricLabel + " " + this.metric + "\n\t\t(stddev:\t" + this.stddev() + ")";
+    }
+    /*
+    Data to record:
+    avg time to trade execution.
+    Time to execute trade as a function of risk
+    number of times a client is rejected due to
+        pdt
+        cant afford
+
+    avg amount of shares traded
+    avg price of shares traded
+
+     */
+
 }

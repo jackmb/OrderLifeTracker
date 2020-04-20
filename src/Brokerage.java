@@ -1,4 +1,3 @@
-import com.sun.deploy.cache.BaseLocalApplicationProperties;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -16,12 +15,19 @@ public class Brokerage {
   public ArrayList<Population.Client> clients = new ArrayList<>();
   private static ArrayList<Trade> trades = new ArrayList<>();
   private static RiskManager manager = new RiskManager();
+  public int pdtLosers = 0;
+  public int lowNetWorths = 0;
+  public Data time = new Data();
+  public int highestRisk = 0;
+  public Data[] timePerRisk = {new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data()};
+  public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0};
+
   public Brokerage(){
     setClients(clients);
   }
 
   public static void readTrades(ArrayList<Trade> trades){
-    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBM.TradesOnly.012815.csv";
+    String csvFile = "C:\\Users\\Jack\\Desktop\\Desktop\\PSL\\GMU\\OR\\OR335\\IBMCSV2.csv";
     String line = "";
     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
       while ((line = br.readLine()) != null) {
@@ -93,7 +99,9 @@ public class Brokerage {
                   }
                   client.numberOfTrades++;
                   trade.endTimer();
-                  client.tradesmade.add(trade);
+                  this.time.addData((double)trade.timeelapsed);
+                  this.timePerRisk[client.risk.riskLevel].addData((double)trade.timeelapsed);
+                    client.tradesmade.add(trade);
                   clients.set(clientid, client);
                   trade.client = client;
                   trades.set(i, trade);
@@ -104,6 +112,7 @@ public class Brokerage {
 
                   break;
                 }else{
+                  lowNetWorths++;
                   // skip to the next client
                   client.risk.increaseRisk();
                   //client.tradesfailed.add(trade);
@@ -125,6 +134,8 @@ public class Brokerage {
                     }
                     client.numberOfTrades++;
                     trade.endTimer();
+                    this.time.addData((double)trade.timeelapsed);
+                      this.timePerRisk[client.risk.riskLevel].addData((double)trade.timeelapsed);
                     client.tradesmade.add(trade);
                     clients.set(clientid, client);
                     //System.out.println("Number of trades filled: "+ ++x+" not filled: "+y);
@@ -135,6 +146,7 @@ public class Brokerage {
                     }
                     break;
                   }else{
+                      lowNetWorths++;
                     // skip to the next client
                     //client.tradesfailed.add(trade);
                     client.risk.increaseRisk();
@@ -146,6 +158,7 @@ public class Brokerage {
                   }
                 }else{
                   // skip to the next client
+                  pdtLosers++;
                   client.risk.increaseRisk();
                   //client.tradesfailed.add(trade);
                   clients.set(client.getID(), client);
@@ -158,6 +171,7 @@ public class Brokerage {
               if(clientid == 4269) {
                 //System.out.println(client);
               }
+              if(client.risk.riskLevel > this.highestRisk) { this.highestRisk = client.risk.riskLevel; }
             }
         }else{
           if(trade.tradeType){
@@ -168,6 +182,20 @@ public class Brokerage {
         }
 
     }
+    for(int i = 0; i < clients.size(); i++) {
+        clientsPerRisk[clients.get(i).risk.riskLevel]++;
+    }
+    time.recordMetric("Avg time for all clients:\t", time.mean());
+    for(int i = 0; i < timePerRisk.length; i++) {
+        timePerRisk[i].recordMetric("Avg time (ns) for clients of risk " + i + ":\t", timePerRisk[i].mean());
+    }
+    for(int i = 0; i < clientsPerRisk.length; i++) {
+        System.out.println(clientsPerRisk[i] + " clients of risk " + i);
+    }
+      for(int i = 0; i < timePerRisk.length; i++) {
+              System.out.println(timePerRisk[i]);
+      }
+    System.out.println(time + "\nHighest Risk Level:\t" + highestRisk + "\nTrades missed due to PDT:\t" + pdtLosers + "\nTrades missed due to low net worth:\t" + lowNetWorths);
   }
 
   public static void setClients(ArrayList<Population.Client> clients) {
@@ -201,7 +229,7 @@ public class Brokerage {
     readTrades(b.trades);
     b.assignTrade();
     //System.out.println(trades.toString());
-    System.out.println(b.clients);
+   //System.out.println(b.clients);
     //System.out.println(Math.max(b.clients.));
     //assignTrade();
   }

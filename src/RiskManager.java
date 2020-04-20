@@ -46,7 +46,7 @@ public class RiskManager {
         }
     }
 
-    public void checkRisk(Trade t, Simulator sim) {
+    public void assessRisk(Trade t, Simulator sim) {
         randomRisk(t);
         cantAffordBuyRisk(t);
         tooManySharesCheck(t, sim);
