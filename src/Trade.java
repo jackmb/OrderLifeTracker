@@ -1,5 +1,6 @@
 import java.io.IOException;
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 public class Trade {
     int timestamp;
@@ -10,7 +11,8 @@ public class Trade {
     boolean tradenb;
     Population.Client client;
     boolean tradeType;
-
+    long time;
+    long timeelapsed;
     public Trade() {
         timestamp = 0;
         symbol = "ABC";
@@ -19,8 +21,21 @@ public class Trade {
         exchange = "NYSE";
         tradenb = false;
         tradeType = false;
+        client = null;
+        time = 0;
         //TRUE = BUY
         //FALSE = SELL
+
+    }
+    public void startTimer(){
+        time = System.nanoTime();
+    }
+    public void endTimer(){
+        long endtime = System.nanoTime();
+        timeelapsed = endtime - time;
+    }
+    public void executionTime(long t){
+        timeelapsed = t;
     }
     private boolean buyorsell(){
         Random r = new Random();
@@ -51,7 +66,11 @@ public class Trade {
         //System.out.println(tradeType);
     }
     public String toString(){
-        return "Time : "+ timestamp+" Symbol: "+symbol+" Price: "+price+" Shares: "+shares+" Exchange: "+exchange+ " TRADE NB: " + tradenb + " Trade type: "+(!tradeType?"Buy":"Sell")+"\n";
+        if(client != null)
+            return "Time : "+ timestamp+" Symbol: "+symbol+" Price: "+price+" Shares: "+shares+" Exchange: "+exchange+ " TRADE NB: " + tradenb
+                    + " Trade type: "+(!tradeType?"Buy":"Sell")+ "  Client ID: "+client.getID()+" Time Elapsed: "+ timeelapsed+"\n";
+        else
+            return "";
     }
 
 }

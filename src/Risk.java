@@ -1,19 +1,19 @@
 public class Risk {
 
-    String classtype;
+    public int riskLevel;
+    public int client;
 
-    public Risk(Object o ){
-        classtype = o.getClass().toString();
+    public Risk(int id){
+        riskLevel = 0;
+        client = id;
     }
-
-    public double generateRisk(){
-        if(classtype == "class Client"){
-            return 420.0;
-        }else if(classtype == "class Trade"){
-            return 69.0;
-        }else{
-            return 420.69; //randomly generated risk
-        }
+    public int getID(){
+        return client;
     }
-
+    public void increaseRisk(){
+        riskLevel = Math.min(100, riskLevel+1);
+    }
+    public void decreaseRisk(){
+        riskLevel = Math.max(0, riskLevel-1);
+    }
 }

@@ -10,12 +10,19 @@ public class Population {
         public double netWorth;
         public ArrayList<Trade> tradesmade;
         public double initNW = 0;
+        public Risk risk;
+
         private Client(int _id) {
             id = _id;
             netWorth = randomNetworth(id);
             pdt = netWorth <= 25000.00;
             tradesmade = new ArrayList<>();
             initNW = netWorth;
+            risk = new Risk(this.id);
+        }
+
+        public int getID(){
+            return this.id;
         }
 
         public static double randomNetworth(int id){
@@ -39,7 +46,9 @@ public class Population {
         }
 
         public String toString(){
-            return "ID: " + id + " PDT: "+ pdt + " initial net-worth: "+initNW+" final net-worth: "+ getNetworth() + "(" +getNetworth()/initNW *100.0+"%)"+" Number of trades: "+numberOfTrades +" Trades made: "+tradesmade.toString()+"\n";
+            return "ID: " + id + " PDT: "+ pdt + " initial net-worth: "+initNW+" final net-worth: "+ getNetworth() +
+                    "(" +((getNetworth()-initNW)/initNW)*100.0+"%)"+" Number of trades: "+numberOfTrades +" Risk level: "+risk.riskLevel +" Trades made: "+tradesmade.toString()+
+                  "\n";
         }
 
     }
