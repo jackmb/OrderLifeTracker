@@ -34,6 +34,7 @@ public class Population {
             }else if (id >= 62 && id < 3574){ // top 57% , unlimited trades
                 double x = 1;
                 while (x < 25000.0) x = Math.abs(r.nextGaussian() * 50000.0 + 8333.33);
+                //while (x < 100000.0) x = Math.abs(r.nextGaussian() * 200000.0 + 33333.33);
                 return x;
             } else {
                 double x = 25000.0;

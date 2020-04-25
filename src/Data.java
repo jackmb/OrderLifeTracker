@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Data {
-    private ArrayList<Double> data = new ArrayList<Double>();
+    public ArrayList<Double> data = new ArrayList<Double>();
     private String metricLabel;
     private Double metric;
 
@@ -63,8 +63,8 @@ public class Data {
     }
 
     public static class TriDist<T> {
-        public T triDist(T x, Double chanceX, T y, Double chanceY, T z, Double chanceZ) {
-            Double total = chanceX + chanceY + chanceZ;
+        public T triDist(T x, double chanceX, T y, double chanceY, T z, double chanceZ) {
+            double total = chanceX + chanceY + chanceZ;
             chanceX = (chanceX / total) * 100;
             chanceY = (chanceY / total) * 100;
             int rand = new Random().nextInt(100);
