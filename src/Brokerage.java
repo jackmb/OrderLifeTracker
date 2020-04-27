@@ -2,12 +2,11 @@
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Random;
-import java.util.concurrent.TimeUnit;
+
 
 public class Brokerage {
 
@@ -15,6 +14,7 @@ public class Brokerage {
   public ArrayList<Population.Client> clients = new ArrayList<>();
   private static ArrayList<Trade> trades = new ArrayList<>();
   private static RiskManager manager = new RiskManager();
+  public static int tradenbcount;
   public int pdtLosers = 0;
   public int lowNetWorths = 0;
   public Data time = new Data();
@@ -23,11 +23,17 @@ public class Brokerage {
   public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0};
 
   public Brokerage(){
-    setClients(clients);
-  }
+    readTrades(trades);
+    System.out.println(tradenbcount + " "+tradenbcount/4);
+    setClients(clients, (tradenbcount/4));
 
+  }
+  public static void incNBCount() {
+    tradenbcount++;
+  }
   public static void readTrades(ArrayList<Trade> trades){
-    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBM.TradesOnly.012815.csv";
+    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv";
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv";
     String line = "";
     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
       while ((line = br.readLine()) != null) {
@@ -36,7 +42,12 @@ public class Brokerage {
           Trade t = new Trade(line);
           //manager.checkRisk(t);
           trades.add(t);
-
+          //System.out.println(line);
+          String []a = line.replace(" ", "").split(",");
+          //System.out.println(Arrays.toString(a));
+          if(a[1].contains("TRADENB")){
+            incNBCount();
+          }
         }
       }
     } catch (IOException e) {
@@ -52,21 +63,18 @@ public class Brokerage {
       x =2;
     }
   }
-  public void assignTrade() throws InterruptedException {
+  public void assignTrade(int populationSize) throws InterruptedException {
     Rand randomint = new Rand();
     Random nextclient = new Random();
-
-    ArrayList<Trade> tradescopy = trades;
-    //int x = 0, y = 0;
+    double mean = clients.size() * .28;
+    double stddev = clients.size() * .18;
     for(int i = 0; i < trades.size(); i++){
 
       Trade trade = trades.get(i);
       double tradeDirection = (trade.tradeType)? -1.0: 1.0;
       double commisioncost = Math.max(trade.shares / 10, 10);
       double transactioncost = ((trade.price*trade.shares)+commisioncost) * tradeDirection;
-      //Data.TriDist z = new Data.TriDist();
-      //int len = 2000;//(int) z.triDist(1900, 25.0, 2000, 50.0, 2100, 25.0);
-      //System.out.println(len);
+
       if(trade.tradenb){
 
         Population.Client [] clientarray = new Population.Client[20];
@@ -74,9 +82,7 @@ public class Brokerage {
         for(int x = 0; x < clientarray.length; x++){ // create x number of clients
 
           //clientarray[x] = clients.get( getClientID(randomint.next()) );
-
-          clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *1786+1143) % 6270)));
-          //clientarray[x].risk.setRisk(r.next());
+          clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *mean+stddev) % populationSize)));
         }
         Arrays.sort(clientarray, new Comparator<Population.Client>() {
           @Override
@@ -84,29 +90,20 @@ public class Brokerage {
             return o1.risk.riskLevel > o2.risk.riskLevel ? 1 :  o1.risk.riskLevel < o2.risk.riskLevel? -1 : 0;
           }
         });
-
-        //System.out.println(Arrays.toString(clientarray));
         //loop();
-          //while(true){
         boolean tradeResolved = false;
         while(!tradeResolved) {
-
           trade.startTimer();
-          int q = 0;
           for (Population.Client client : clientarray) { // loop through each client
-            q++;
-
-            if (client.getID() > 61 && client.getID() <= 3573) {
-              Thread.sleep(0, 100);
-            } else if (client.getID() > 3573) {
-              Thread.sleep(0, 200);
+            if (client.getID() > (int)(Brokerage.tradenbcount *0.01) && client.getID() <= (int)(Brokerage.tradenbcount *0.57)) {
+              //Thread.sleep(0, 2);
+            } else if (client.getID() > (int)(Brokerage.tradenbcount *0.57)) {
+              //Thread.sleep(0, 4);
             }
-
             int clientid = client.getID();
             if (!client.pdt) {
               if (Math.abs(transactioncost) < client.netWorth) {
                 client.netWorth = client.netWorth - transactioncost;
-                //client.risk.decreaseRisk();
                 if (client.netWorth < 25000.0) {
                   client.pdt = true;
                 } else {
@@ -121,10 +118,6 @@ public class Brokerage {
                 trade.client = client;
                 trades.set(i, trade);
                 tradeResolved = true;
-                //if(clientid == 4269) {
-                //  System.out.println(client);
-                //}
-                //System.out.println("Number of trades filled: "+ ++x +" not filled: "+y);
 
                 break;
               } else {
@@ -133,11 +126,6 @@ public class Brokerage {
                 client.risk.increaseRisk();
                 //client.tradesfailed.add(trade);
                 clients.set(client.getID(), client);
-
-                //clientid = getClientID(randomint.next());
-                //System.out.println(clientid);
-                //client = clients.get(clientid);
-                //System.out.println("Number of trades filled: "+ x+" not filled: "+ ++y);
               }
             } else {
               if (client.numberOfTrades < 3) {
@@ -155,12 +143,8 @@ public class Brokerage {
                   this.timePerRisk[client.risk.riskLevel].addData((double) trade.timeelapsed);
                   client.tradesmade.add(trade);
                   clients.set(clientid, client);
-                  //System.out.println("Number of trades filled: "+ ++x+" not filled: "+y);
                   trade.client = client;
                   trades.set(i, trade);
-                  if (clientid == 4269) {
-                    //System.out.println(client);
-                  }
                   tradeResolved = true;
                   break;
                 } else {
@@ -169,11 +153,6 @@ public class Brokerage {
                   //client.tradesfailed.add(trade);
                   client.risk.increaseRisk();
                   clients.set(client.getID(), client);
-
-                  //clientid = getClientID(randomint.next());
-                  //System.out.println(clientid);
-                  //client = clients.get(clientid);
-                  //System.out.println("Number of trades filled: "+x+" not filled: "+ ++y);
                 }
               } else {
                 // skip to the next client
@@ -181,15 +160,7 @@ public class Brokerage {
                 client.risk.increaseRisk();
                 //client.tradesfailed.add(trade);
                 clients.set(client.getID(), client);
-
-                //clientid = getClientID(randomint.next());
-                //System.out.println(clientid);
-                //client = clients.get(clientid);
-                //System.out.println("Number of trades filled: "+x+" not filled: "+ ++y);
               }
-            }
-            if (clientid == 4269) {
-              //System.out.println(client);
             }
 
             if (client.risk.riskLevel > this.highestRisk) {
@@ -198,7 +169,7 @@ public class Brokerage {
           }
           for (int x = 0; x < clientarray.length; x++) { // create x number of clients
             //clientarray[x] = clients.get( getClientID(randomint.next()));
-            clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() * 1755 + 1200) % 6270)));
+            clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *mean+stddev) % populationSize)));
             //clientarray[x].risk.setRisk(r.next());
           }
         }
@@ -246,9 +217,9 @@ public class Brokerage {
     return result;
   }
 
-  public static void setClients(ArrayList<Population.Client> clients) {
+  public static void setClients(ArrayList<Population.Client> clients, int popSize) {
     int i = -1;
-    while(i++ < 6270){
+    while(i++ < popSize){
       clients.add(Population.createClient());
       //System.out.println(clients.get(i));
     }
@@ -274,8 +245,8 @@ public class Brokerage {
         }
         System.out.println("\nMore than 25k "+count +" Less than 25k "+count1+ " Total number of clients "+ count2);
         System.out.println(a/count);*/
-    readTrades(b.trades);
-    b.assignTrade();
+
+    b.assignTrade(b.tradenbcount/4);
     //double [] x = .toArray();
     double[] target = new double[b.timePerRisk[0].data.size()];
     for (int i = 0; i < target.length; i++) {

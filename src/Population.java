@@ -3,7 +3,8 @@ import java.util.Random;
 
 public class Population {
 
-    public static class Client {
+
+    public static class Client extends Population {
         private int id;
         public int numberOfTrades = 0;
         public boolean pdt;
@@ -27,11 +28,12 @@ public class Population {
 
         public static double randomNetworth(int id){
             Random r = new Random();
-            if (id >= 0 && id < 62) {
+            //System.out.println(Brokerage.tradenbcount);
+            if (id >= 0 && id < (int)(Brokerage.tradenbcount *0.01)) {
                 double x = 1;
                 while (x < 5000000.0) x = Math.abs(r.nextGaussian() * 10000000.0 + 3000000.0);
                 return x;
-            }else if (id >= 62 && id < 3574){ // top 57% , unlimited trades
+            }else if (id >= (int)(Brokerage.tradenbcount *0.01) && id < (int)(Brokerage.tradenbcount *0.57)){//else if (id >= 62 && id < 3574){ // top 57% , unlimited trades
                 double x = 1;
                 while (x < 25000.0) x = Math.abs(r.nextGaussian() * 50000.0 + 8333.33);
                 //while (x < 100000.0) x = Math.abs(r.nextGaussian() * 200000.0 + 33333.33);
