@@ -1,22 +1,12 @@
 public class Simulator {
-    Double avgPrice = 0.0, stdDevPrice = 0.0;
-    int maxSharesAllowed = 0;
-    RiskManager rm = new RiskManager();
-    Brokerage brkrg = new Brokerage();
-
-    public Simulator() {}
-
-    public void Initialization() {
-
-    }
-
-    private void assessAllRisk(Brokerage brokerage) {
-//        for(int i = 0; i < brokerage.getTrades().size(); i++) {
-//            brokerage.getManager().assessRisk(brokerage.getTrades().get(i), this);
-//        }
-    }
-
-    public static double exponential(Rand rng, double mean) {
-        return -mean * Math.log(rng.next());
+    public static void main(String[] args) throws InterruptedException {
+        Brokerage ibm = new Brokerage("C:\\Users\\Jack\\Desktop\\Desktop\\PSL\\GMU\\OR\\OR335\\IBMCSV2.csv", 4);
+        Brokerage spy = new Brokerage("C:\\Users\\Jack\\Desktop\\Desktop\\PSL\\GMU\\OR\\OR335\\SPYCSV2.csv", 40);
+        Brokerage vxx = new Brokerage("C:\\Users\\Jack\\Desktop\\Desktop\\PSL\\GMU\\OR\\OR335\\VXX_Trimmed.csv", 40);
+        //ibm.run();
+        System.out.println("----------------------------------");
+        spy.run();
+        System.out.println("----------------------------------");
+        //vxx.run();
     }
 }
