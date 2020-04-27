@@ -39,10 +39,10 @@ public class Trade {
         long endtime = System.nanoTime(), offset;
         if(client.getID() < (double)popSize * 0.01) {
             offset = 500;
-        } else {
+        }else {
             offset = 1000;
         }
-        timeelapsed = endtime - time + offset;
+        timeelapsed = endtime - time + (offset);
     }
     //public void executionTime(long t){
     //    timeelapsed = t;

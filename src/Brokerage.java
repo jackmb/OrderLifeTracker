@@ -20,7 +20,7 @@ public class Brokerage {
   public Data time = new Data();
   public int highestRisk = 0;
   public Data[] timePerRisk = {new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data()};
-  public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0};
+  public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
 
   public Brokerage(){
     readTrades(trades);
@@ -31,9 +31,9 @@ public class Brokerage {
     tradenbcount++;
   }
   public static void readTrades(ArrayList<Trade> trades){
-    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv";
-    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv";
-    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\VXXTradesOnly.csv";
+    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv"; // client size 10
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv"; // client size 20
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\VXXTradesOnly.csv"; // client size 20
     String line = "";
     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
       while ((line = br.readLine()) != null) {
@@ -54,10 +54,6 @@ public class Brokerage {
       e.printStackTrace();
     }
   }
-
-  public static int getClientID(double random){
-    return ((int) (random*100000.0)) % 6270;
-  }
   public static void loop(){
     for (int x = 0; x < 10; x++){
       x =2;
@@ -77,24 +73,25 @@ public class Brokerage {
       double transactioncost = ((trade.price*trade.shares)+commisioncost) * tradeDirection;
 
       if(trade.tradenb){
+
+        int multiplier = 1;
         //System.out.println(trade.toString());
-        Population.Client [] clientarray = new Population.Client[20];
+        Population.Client [] clientarray = new Population.Client[10];
         //Rand r = new Rand();
         for(int x = 0; x < clientarray.length; x++){ // create x number of clients
-
-          //clientarray[x] = clients.get( getClientID(randomint.next()) );
           clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *mean+stddev) % populationSize)));
         }
         Arrays.sort(clientarray, new Comparator<Population.Client>() {
           @Override
           public int compare(Population.Client o1, Population.Client o2) {
-            return o1.risk.riskLevel > o2.risk.riskLevel ? 1 :  o1.risk.riskLevel < o2.risk.riskLevel? -1 : 0;
+            return Integer.compare(o1.risk.riskLevel, o2.risk.riskLevel);
           }
         });
         //loop();
         boolean tradeResolved = false;
+        trade.startTimer();
         while(!tradeResolved) {
-          trade.startTimer();
+
           for (Population.Client client : clientarray) { // loop through each client
             if (client.getID() > (int)(Brokerage.tradenbcount *0.01) && client.getID() <= (int)(Brokerage.tradenbcount *0.57)) {
               //Thread.sleep(0, 2);
@@ -175,6 +172,7 @@ public class Brokerage {
             //clientarray[x].risk.setRisk(r.next());
           }
         }
+        multiplier++;
         }else{
           if(trade.tradeType){
               //System.out.println("Price Time Priority, the market price has changed, order cannot be filled.");
@@ -270,11 +268,86 @@ public class Brokerage {
     for (int i = 0; i < target4.length; i++) {
       target4[i] = b.timePerRisk[4].data.get(i);                // java 1.5+ style (outboxing)
     }
+    double[] target5 = new double[b.timePerRisk[5].data.size()];
+    for (int i = 0; i < target5.length; i++) {
+      target5[i] = b.timePerRisk[5].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target6 = new double[b.timePerRisk[6].data.size()];
+    for (int i = 0; i < target6.length; i++) {
+      target6[i] = b.timePerRisk[6].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target7 = new double[b.timePerRisk[7].data.size()];
+    for (int i = 0; i < target7.length; i++) {
+      target7[i] = b.timePerRisk[7].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target8 = new double[b.timePerRisk[8].data.size()];
+    for (int i = 0; i < target8.length; i++) {
+      target8[i] = b.timePerRisk[8].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target9 = new double[b.timePerRisk[9].data.size()];
+    for (int i = 0; i < target9.length; i++) {
+      target9[i] = b.timePerRisk[9].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target10 = new double[b.timePerRisk[10].data.size()];
+    for (int i = 0; i < target10.length; i++) {
+      target10[i] = b.timePerRisk[10].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target11 = new double[b.timePerRisk[11].data.size()];
+    for (int i = 0; i < target11.length; i++) {
+      target11[i] = b.timePerRisk[11].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target12 = new double[b.timePerRisk[12].data.size()];
+    for (int i = 0; i < target12.length; i++) {
+      target12[i] = b.timePerRisk[12].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target13 = new double[b.timePerRisk[13].data.size()];
+    for (int i = 0; i < target13.length; i++) {
+      target13[i] = b.timePerRisk[13].data.get(i);                // java 1.5+ style (outboxing)
+    }double[] target14 = new double[b.timePerRisk[14].data.size()];
+    for (int i = 0; i < target14.length; i++) {
+      target14[i] = b.timePerRisk[14].data.get(i);                // java 1.5+ style (outboxing)
+    }double[] target15 = new double[b.timePerRisk[15].data.size()];
+    for (int i = 0; i < target15.length; i++) {
+      target15[i] = b.timePerRisk[15].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target16 = new double[b.timePerRisk[16].data.size()];
+    for (int i = 0; i < target16.length; i++) {
+      target16[i] = b.timePerRisk[16].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target17 = new double[b.timePerRisk[17].data.size()];
+    for (int i = 0; i < target17.length; i++) {
+      target17[i] = b.timePerRisk[17].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target18 = new double[b.timePerRisk[18].data.size()];
+    for (int i = 0; i < target18.length; i++) {
+      target18[i] = b.timePerRisk[18].data.get(i);                // java 1.5+ style (outboxing)
+    }
+    double[] target19 = new double[b.timePerRisk[19].data.size()];
+    for (int i = 0; i < target19.length; i++) {
+      target19[i] = b.timePerRisk[19].data.get(i);                // java 1.5+ style (outboxing)
+    }
     System.out.println("95% CI for risk 0: "+ Arrays.toString(CIinterval(target)));
     System.out.println("95% CI for risk 1: "+Arrays.toString(CIinterval(target1)));
     System.out.println("95% CI for risk 2: "+Arrays.toString(CIinterval(target2)));
     System.out.println("95% CI for risk 3: "+Arrays.toString(CIinterval(target3)));
     System.out.println("95% CI for risk 4: "+Arrays.toString(CIinterval(target4)));
+    System.out.println("95% CI for risk 5: "+Arrays.toString(CIinterval(target5)));
+    System.out.println("95% CI for risk 6: "+Arrays.toString(CIinterval(target6)));
+    System.out.println("95% CI for risk 7: "+Arrays.toString(CIinterval(target7)));
+    System.out.println("95% CI for risk 8: "+Arrays.toString(CIinterval(target8)));
+    System.out.println("95% CI for risk 9: "+Arrays.toString(CIinterval(target9)));
+    System.out.println("95% CI for risk 10: "+Arrays.toString(CIinterval(target10)));
+    System.out.println("95% CI for risk 11: "+Arrays.toString(CIinterval(target11)));
+    System.out.println("95% CI for risk 12: "+Arrays.toString(CIinterval(target12)));
+    System.out.println("95% CI for risk 13: "+Arrays.toString(CIinterval(target13)));
+    System.out.println("95% CI for risk 14: "+Arrays.toString(CIinterval(target14)));
+    System.out.println("95% CI for risk 15: "+Arrays.toString(CIinterval(target15)));
+    System.out.println("95% CI for risk 16: "+Arrays.toString(CIinterval(target16)));
+    System.out.println("95% CI for risk 17: "+Arrays.toString(CIinterval(target17)));
+    System.out.println("95% CI for risk 18: "+Arrays.toString(CIinterval(target18)));
+    System.out.println("95% CI for risk 19: "+Arrays.toString(CIinterval(target19)));
+
+
 
     //System.out.println(trades.toString());
    //System.out.println(b.clients);
