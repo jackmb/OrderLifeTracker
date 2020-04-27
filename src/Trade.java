@@ -8,7 +8,6 @@ public class Trade {
     double price;
     int shares;
     String exchange;
-    boolean tooRisky;
     boolean tradenb;
     Population.Client client;
     boolean tradeType;
@@ -33,12 +32,21 @@ public class Trade {
         time = System.nanoTime();
     }
     public void endTimer(){
-        long endtime = System.nanoTime();
-        timeelapsed = endtime - time;
+        //long endtime = System.nanoTime();
+        //timeelapsed = endtime - time;
     }
-    public void executionTime(long t){
-        timeelapsed = t;
+    public void endTimer(int popSize, Population.Client client) {
+        long endtime = System.nanoTime(), offset;
+        if(client.getID() < (double)popSize * 0.01) {
+            offset = 500;
+        } else {
+            offset = 1000;
+        }
+        timeelapsed = endtime - time + offset;
     }
+    //public void executionTime(long t){
+    //    timeelapsed = t;
+    //}
     private boolean buyorsell(){
         Random r = new Random();
         return r.nextGaussian() < 0;
@@ -72,7 +80,8 @@ public class Trade {
             return "Time : "+ timestamp+" Symbol: "+symbol+" Price: "+price+" Shares: "+shares+" Exchange: "+exchange+ " TRADE NB: " + tradenb
                     + " Trade type: "+(!tradeType?"Buy":"Sell")+ "  Client ID: "+client.getID()+" Time Elapsed: "+ timeelapsed+"\n";
         else
-            return "";
+            //return "This trades cost: " + (shares*price);
+            return "null";
     }
 
 }

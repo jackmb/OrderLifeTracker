@@ -24,16 +24,16 @@ public class Brokerage {
 
   public Brokerage(){
     readTrades(trades);
-    System.out.println(tradenbcount + " "+tradenbcount/4);
     setClients(clients, (tradenbcount/4));
-
+    System.out.println(tradenbcount + " "+tradenbcount/4);
   }
   public static void incNBCount() {
     tradenbcount++;
   }
   public static void readTrades(ArrayList<Trade> trades){
-    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv";
-    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv";
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv";
+    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv";
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\VXXTradesOnly.csv";
     String line = "";
     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
       while ((line = br.readLine()) != null) {
@@ -71,12 +71,13 @@ public class Brokerage {
     for(int i = 0; i < trades.size(); i++){
 
       Trade trade = trades.get(i);
+
       double tradeDirection = (trade.tradeType)? -1.0: 1.0;
       double commisioncost = Math.max(trade.shares / 10, 10);
       double transactioncost = ((trade.price*trade.shares)+commisioncost) * tradeDirection;
 
       if(trade.tradenb){
-
+        //System.out.println(trade.toString());
         Population.Client [] clientarray = new Population.Client[20];
         //Rand r = new Rand();
         for(int x = 0; x < clientarray.length; x++){ // create x number of clients
@@ -110,15 +111,15 @@ public class Brokerage {
                   client.pdt = false;
                 }
                 client.numberOfTrades++;
-                trade.endTimer();
-                this.time.addData((double) trade.timeelapsed);
-                this.timePerRisk[client.risk.riskLevel].addData((double) trade.timeelapsed);
+                trade.endTimer(tradenbcount / 4, client);
+                //System.out.println(trade.timestamp);
                 client.tradesmade.add(trade);
                 clients.set(clientid, client);
                 trade.client = client;
                 trades.set(i, trade);
                 tradeResolved = true;
-
+                this.time.addData((double) trade.timeelapsed);
+                this.timePerRisk[client.risk.riskLevel].addData((double) trade.timeelapsed);
                 break;
               } else {
                 lowNetWorths++;
@@ -138,14 +139,15 @@ public class Brokerage {
                     client.pdt = true;
                   }
                   client.numberOfTrades++;
-                  trade.endTimer();
-                  this.time.addData((double) trade.timeelapsed);
-                  this.timePerRisk[client.risk.riskLevel].addData((double) trade.timeelapsed);
+                  trade.endTimer(tradenbcount / 4, client);
+                  //System.out.println(trade.timestamp);
                   client.tradesmade.add(trade);
                   clients.set(clientid, client);
                   trade.client = client;
                   trades.set(i, trade);
                   tradeResolved = true;
+                  this.time.addData((double) trade.timeelapsed);
+                  this.timePerRisk[client.risk.riskLevel].addData((double) trade.timeelapsed);
                   break;
                 } else {
                   lowNetWorths++;
@@ -245,7 +247,7 @@ public class Brokerage {
         }
         System.out.println("\nMore than 25k "+count +" Less than 25k "+count1+ " Total number of clients "+ count2);
         System.out.println(a/count);*/
-
+    Thread.sleep(20000, 0);
     b.assignTrade(b.tradenbcount/4);
     //double [] x = .toArray();
     double[] target = new double[b.timePerRisk[0].data.size()];
