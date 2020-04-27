@@ -22,18 +22,16 @@ public class Brokerage {
   public Data[] timePerRisk = {new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data()};
   public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
 
-  public Brokerage(){
-    readTrades(trades);
+  public Brokerage(String csvFile, int competitors) {
+    readTrades(trades, csvFile);
     setClients(clients, (tradenbcount/4));
     System.out.println(tradenbcount + " "+tradenbcount/4);
+    assignTrade(tradenbcount/4, competitors);
   }
   public static void incNBCount() {
     tradenbcount++;
   }
-  public static void readTrades(ArrayList<Trade> trades){
-    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv"; // client size 10
-    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv"; // client size 20
-    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\VXXTradesOnly.csv"; // client size 20
+  public static void readTrades(ArrayList<Trade> trades, String csvFile ){
     String line = "";
     try (BufferedReader br = new BufferedReader(new FileReader(csvFile))) {
       while ((line = br.readLine()) != null) {
@@ -59,7 +57,7 @@ public class Brokerage {
       x =2;
     }
   }
-  public void assignTrade(int populationSize) throws InterruptedException {
+  public void assignTrade(int populationSize, int competitors) {
     Rand randomint = new Rand();
     Random nextclient = new Random();
     double mean = clients.size() * .28;
@@ -76,7 +74,7 @@ public class Brokerage {
 
         int multiplier = 1;
         //System.out.println(trade.toString());
-        Population.Client [] clientarray = new Population.Client[10];
+        Population.Client [] clientarray = new Population.Client[competitors];
         //Rand r = new Rand();
         for(int x = 0; x < clientarray.length; x++){ // create x number of clients
           clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *mean+stddev) % populationSize)));
@@ -225,8 +223,11 @@ public class Brokerage {
     }
 
   }
-  public static void main (String [] args) throws InterruptedException {
-    Brokerage b = new Brokerage();
+  public static void main (String [] args){
+    String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\IBMTradesOnly.csv"; // client size 10
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\SPYTradesOnly.csv"; // client size 20
+    //String csvFile = "C:\\Users\\Ash\\OneDrive\\GMU\\Fourth Semester\\OR  335\\or335projectdata\\VXXTradesOnly.csv"; // client size 20
+    Brokerage b = new Brokerage(csvFile, 4);
     //setClients(b.clients);
         /*int count = 0, count1 = 0, count2 = 0;
         int a = 0;
@@ -245,8 +246,8 @@ public class Brokerage {
         }
         System.out.println("\nMore than 25k "+count +" Less than 25k "+count1+ " Total number of clients "+ count2);
         System.out.println(a/count);*/
-    Thread.sleep(20000, 0);
-    b.assignTrade(b.tradenbcount/4);
+
+
     //double [] x = .toArray();
     double[] target = new double[b.timePerRisk[0].data.size()];
     for (int i = 0; i < target.length; i++) {
@@ -347,12 +348,30 @@ public class Brokerage {
     System.out.println("95% CI for risk 18: "+Arrays.toString(CIinterval(target18)));
     System.out.println("95% CI for risk 19: "+Arrays.toString(CIinterval(target19)));
 
+    double sum = 0, largestGains = 0, largestLoss = 0;
+    for(Population.Client c: b.clients){
+      double temp = (c.netWorth - c.initNW)/c.initNW;
+      sum += temp;
+      if(temp > largestGains){
+        largestGains = temp;
+      }
+      if(temp < largestLoss){
+        largestLoss = temp;
+      }
+    }
+    System.out.println("Average change to net worth: "+ (sum/b.clients.size())*100.0 + "%");
+    System.out.println("Largest gain: "+largestGains*100.0 +"% Largest loss: "+largestLoss*100.0+"%");
 
-
+    double tradecost = 0;
+    for(Population.Client c: b.clients){
+         for(Trade t: c.tradesmade){
+           tradecost+= (t.price*t.shares);
+         }
+    }
+    System.out.println("Average trade cost per client: $"+tradecost/b.clients.size());
     //System.out.println(trades.toString());
    //System.out.println(b.clients);
     //System.out.println(Math.max(b.clients.));
     //assignTrade();
-
   }
 }
