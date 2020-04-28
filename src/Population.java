@@ -58,7 +58,7 @@ public class Population {
     }
 
     static int clientID = 0;
-    public Population() {
+    public static void resetIDs() {
         clientID = 0;
     }
     public static Client createClient() {

@@ -1,6 +1,4 @@
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
@@ -20,10 +18,10 @@ public class Brokerage {
   public int highestRisk = 0;
   public Data[] timePerRisk = {new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data()};
   public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
-  public Population pop;
+//  public Population pop;
 
   public Brokerage(String csvFile, int competitors) {
-    pop = new Population();
+//    pop = new Population();
     readTrades(trades, csvFile);
     setClients(clients, (tradenbcount/4));
     System.out.println(tradenbcount + " "+tradenbcount/4);
@@ -150,6 +148,7 @@ public class Brokerage {
                   // skip to the next client
                   //client.tradesfailed.add(trade);
                   client.risk.increaseRisk();
+                  System.out.println(client.getID());
                   clients.set(client.getID(), client);
                 }
               } else {
@@ -224,7 +223,11 @@ public class Brokerage {
     }
 
   }
-  public void run() {
+  public void run() throws IOException {
+    BufferedWriter out = new BufferedWriter(
+            new FileWriter(System.getenv("APPDATA") + "\\out.txt"));
+    out.write("Hello World:\n");
+    out.close();
     double[] target = new double[this.timePerRisk[0].data.size()];
     for (int i = 0; i < target.length; i++) {
       target[i] = this.timePerRisk[0].data.get(i);                // java 1.5+ style (outboxing)
@@ -349,5 +352,6 @@ public class Brokerage {
     //System.out.println(this.clients);
     //System.out.println(Math.max(this.clients.));
     //assignTrade();
+    Population.resetIDs();
   }
 }
