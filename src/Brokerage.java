@@ -18,14 +18,13 @@ public class Brokerage {
   public int highestRisk = 0;
   public Data[] timePerRisk = {new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data()};
   public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
-//  public Population pop;
+  public int competitors = 0;
 
   public Brokerage(String csvFile, int competitors) {
 //    pop = new Population();
     readTrades(trades, csvFile);
     setClients(clients, (tradenbcount/4));
-    System.out.println(tradenbcount + " "+tradenbcount/4);
-    assignTrade(tradenbcount/4, competitors);
+    this.competitors = competitors;
   }
   public static void incNBCount() {
     tradenbcount++;
@@ -56,7 +55,7 @@ public class Brokerage {
       x =2;
     }
   }
-  public void assignTrade(int populationSize, int competitors) {
+  public void assignTrade(int populationSize, int competitors, BufferedWriter out) throws IOException {
     Rand randomint = new Rand();
     Random nextclient = new Random();
     double mean = clients.size() * .28;
@@ -68,8 +67,8 @@ public class Brokerage {
       double tradeDirection = (trade.tradeType)? -1.0: 1.0;
       double commisioncost = Math.max(trade.shares / 10, 10);
       double transactioncost = ((trade.price*trade.shares)+commisioncost) * tradeDirection;
-
       if(trade.tradenb){
+
 
         int multiplier = 1;
         //System.out.println(trade.toString());
@@ -148,7 +147,6 @@ public class Brokerage {
                   // skip to the next client
                   //client.tradesfailed.add(trade);
                   client.risk.increaseRisk();
-                  System.out.println(client.getID());
                   clients.set(client.getID(), client);
                 }
               } else {
@@ -188,12 +186,12 @@ public class Brokerage {
       timePerRisk[i].recordMetric("Avg time (ns) for clients of risk " + i + ":\t", timePerRisk[i].mean());
     }
     for(int i = 0; i < clientsPerRisk.length; i++) {
-      System.out.println(clientsPerRisk[i] + " clients of risk " + i);
+      out.write(clientsPerRisk[i] + " clients of risk " + i + "\n");
     }
     for(int i = 0; i < timePerRisk.length; i++) {
-      System.out.println(timePerRisk[i]);
+      out.write(timePerRisk[i].toString() + "\n");
     }
-    System.out.println(time + "\nHighest Risk Level:\t" + highestRisk + "\nTrades missed due to PDT:\t" + pdtLosers + "\nTrades missed due to low net worth:\t" + lowNetWorths);
+    out.write(time + "\nHighest Risk Level:\t" + highestRisk + "\nTrades missed due to PDT:\t" + pdtLosers + "\nTrades missed due to low net worth:\t" + lowNetWorths + "\n");
   }
 
 
@@ -215,7 +213,7 @@ public class Brokerage {
     return result;
   }
 
-  public static void setClients(ArrayList<Population.Client> clients, int popSize) {
+  public void setClients(ArrayList<Population.Client> clients, int popSize) {
     int i = -1;
     while(i++ < popSize){
       clients.add(Population.createClient());
@@ -223,11 +221,9 @@ public class Brokerage {
     }
 
   }
-  public void run() throws IOException {
-    BufferedWriter out = new BufferedWriter(
-            new FileWriter(System.getenv("APPDATA") + "\\out.txt"));
-    out.write("Hello World:\n");
-    out.close();
+  public void run(String fileOutName) throws IOException {
+    BufferedWriter out = new BufferedWriter(new FileWriter(System.getenv("APPDATA") + "\\" + fileOutName));
+    assignTrade(tradenbcount/4, competitors, out);
     double[] target = new double[this.timePerRisk[0].data.size()];
     for (int i = 0; i < target.length; i++) {
       target[i] = this.timePerRisk[0].data.get(i);                // java 1.5+ style (outboxing)
@@ -306,26 +302,47 @@ public class Brokerage {
     for (int i = 0; i < target19.length; i++) {
       target19[i] = this.timePerRisk[19].data.get(i);                // java 1.5+ style (outboxing)
     }
-    System.out.println("95% CI for risk 0: "+ Arrays.toString(CIinterval(target)));
-    System.out.println("95% CI for risk 1: "+Arrays.toString(CIinterval(target1)));
-    System.out.println("95% CI for risk 2: "+Arrays.toString(CIinterval(target2)));
-    System.out.println("95% CI for risk 3: "+Arrays.toString(CIinterval(target3)));
-    System.out.println("95% CI for risk 4: "+Arrays.toString(CIinterval(target4)));
-    System.out.println("95% CI for risk 5: "+Arrays.toString(CIinterval(target5)));
-    System.out.println("95% CI for risk 6: "+Arrays.toString(CIinterval(target6)));
-    System.out.println("95% CI for risk 7: "+Arrays.toString(CIinterval(target7)));
-    System.out.println("95% CI for risk 8: "+Arrays.toString(CIinterval(target8)));
-    System.out.println("95% CI for risk 9: "+Arrays.toString(CIinterval(target9)));
-    System.out.println("95% CI for risk 10: "+Arrays.toString(CIinterval(target10)));
-    System.out.println("95% CI for risk 11: "+Arrays.toString(CIinterval(target11)));
-    System.out.println("95% CI for risk 12: "+Arrays.toString(CIinterval(target12)));
-    System.out.println("95% CI for risk 13: "+Arrays.toString(CIinterval(target13)));
-    System.out.println("95% CI for risk 14: "+Arrays.toString(CIinterval(target14)));
-    System.out.println("95% CI for risk 15: "+Arrays.toString(CIinterval(target15)));
-    System.out.println("95% CI for risk 16: "+Arrays.toString(CIinterval(target16)));
-    System.out.println("95% CI for risk 17: "+Arrays.toString(CIinterval(target17)));
-    System.out.println("95% CI for risk 18: "+Arrays.toString(CIinterval(target18)));
-    System.out.println("95% CI for risk 19: "+Arrays.toString(CIinterval(target19)));
+    out.write("95% Confidence intervals for risk:\n");
+    out.write("\t" + 0 + "\t" + Arrays.toString(CIinterval(target)) + "\n");
+    out.write("\t" + 1 + "\t" + Arrays.toString(CIinterval(target1)) + "\n");
+    out.write("\t" + 2 + "\t" + Arrays.toString(CIinterval(target2)) + "\n");
+    out.write("\t" + 3 + "\t" + Arrays.toString(CIinterval(target3)) + "\n");
+    out.write("\t" + 4 + "\t" + Arrays.toString(CIinterval(target4)) + "\n");
+    out.write("\t" + 5 + "\t" + Arrays.toString(CIinterval(target5)) + "\n");
+    out.write("\t" + 6 + "\t" + Arrays.toString(CIinterval(target6)) + "\n");
+    out.write("\t" + 7 + "\t" + Arrays.toString(CIinterval(target7)) + "\n");
+    out.write("\t" + 8 + "\t" + Arrays.toString(CIinterval(target8)) + "\n");
+    out.write("\t" + 9 + "\t" + Arrays.toString(CIinterval(target9)) + "\n");
+    out.write("\t" + 10 + "\t" + Arrays.toString(CIinterval(target10)) + "\n");
+    out.write("\t" + 11 + "\t" + Arrays.toString(CIinterval(target11)) + "\n");
+    out.write("\t" + 12 + "\t" + Arrays.toString(CIinterval(target12)) + "\n");
+    out.write("\t" + 13 + "\t" + Arrays.toString(CIinterval(target13)) + "\n");
+    out.write("\t" + 14 + "\t" + Arrays.toString(CIinterval(target14)) + "\n");
+    out.write("\t" + 15 + "\t" + Arrays.toString(CIinterval(target15)) + "\n");
+    out.write("\t" + 16 + "\t" + Arrays.toString(CIinterval(target16)) + "\n");
+    out.write("\t" + 17 + "\t" + Arrays.toString(CIinterval(target17)) + "\n");
+    out.write("\t" + 18 + "\t" + Arrays.toString(CIinterval(target18)) + "\n");
+    out.write("\t" + 19 + "\t" + Arrays.toString(CIinterval(target19)) + "\n");
+//
+//    System.out.println("95% CI for risk 1: "+Arrays.toString(CIinterval(target1)));
+//    System.out.println("95% CI for risk 2: "+Arrays.toString(CIinterval(target2)));
+//    System.out.println("95% CI for risk 3: "+Arrays.toString(CIinterval(target3)));
+//    System.out.println("95% CI for risk 4: "+Arrays.toString(CIinterval(target4)));
+//    System.out.println("95% CI for risk 5: "+Arrays.toString(CIinterval(target5)));
+//    System.out.println("95% CI for risk 6: "+Arrays.toString(CIinterval(target6)));
+//    System.out.println("95% CI for risk 7: "+Arrays.toString(CIinterval(target7)));
+//    System.out.println("95% CI for risk 8: "+Arrays.toString(CIinterval(target8)));
+//    System.out.println("95% CI for risk 9: "+Arrays.toString(CIinterval(target9)));
+//    System.out.println("95% CI for risk 10: "+Arrays.toString(CIinterval(target10)));
+//    System.out.println("95% CI for risk 11: "+Arrays.toString(CIinterval(target11)));
+//    System.out.println("95% CI for risk 12: "+Arrays.toString(CIinterval(target12)));
+//    System.out.println("95% CI for risk 13: "+Arrays.toString(CIinterval(target13)));
+//    System.out.println("95% CI for risk 14: "+Arrays.toString(CIinterval(target14)));
+//    System.out.println("95% CI for risk 15: "+Arrays.toString(CIinterval(target15)));
+//    System.out.println("95% CI for risk 16: "+Arrays.toString(CIinterval(target16)));
+//    System.out.println("95% CI for risk 17: "+Arrays.toString(CIinterval(target17)));
+//    System.out.println("95% CI for risk 18: "+Arrays.toString(CIinterval(target18)));
+//    System.out.println("95% CI for risk 19: "+Arrays.toString(CIinterval(target19)));
 
     double sum = 0, largestGains = 0, largestLoss = 0;
     for(Population.Client c: this.clients){
@@ -338,8 +355,8 @@ public class Brokerage {
         largestLoss = temp;
       }
     }
-    System.out.println("Average change to net worth: "+ (sum/this.clients.size())*100.0 + "%");
-    System.out.println("Largest gain: "+largestGains*100.0 +"% Largest loss: "+largestLoss*100.0+"%");
+    out.write("Average change to net worth: "+ (sum/this.clients.size())*100.0 + "%\n");
+    out.write("Largest gain: "+largestGains*100.0 +"% Largest loss: "+largestLoss*100.0+"%\n");
 
     double tradecost = 0;
     for(Population.Client c: this.clients){
@@ -347,11 +364,13 @@ public class Brokerage {
         tradecost+= (t.price*t.shares);
       }
     }
-    System.out.println("Average trade cost per client: $"+tradecost/this.clients.size());
+    out.write("Average trade cost per client: $"+tradecost/this.clients.size() + "\n");
     //System.out.println(trades.toString());
     //System.out.println(this.clients);
     //System.out.println(Math.max(this.clients.));
     //assignTrade();
     Population.resetIDs();
+    tradenbcount = 0;
+    out.close();
   }
 }
