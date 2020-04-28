@@ -3,7 +3,6 @@ import java.util.Random;
 
 public class Population {
 
-
     public static class Client extends Population {
         private int id;
         public int numberOfTrades = 0;
@@ -59,6 +58,9 @@ public class Population {
     }
 
     static int clientID = 0;
+    public Population() {
+        clientID = 0;
+    }
     public static Client createClient() {
         return new Client(clientID++);
     }

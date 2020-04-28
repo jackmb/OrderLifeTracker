@@ -20,8 +20,10 @@ public class Brokerage {
   public int highestRisk = 0;
   public Data[] timePerRisk = {new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(), new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data(),new Data()};
   public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
+  public Population pop;
 
   public Brokerage(String csvFile, int competitors) {
+    pop = new Population();
     readTrades(trades, csvFile);
     setClients(clients, (tradenbcount/4));
     System.out.println(tradenbcount + " "+tradenbcount/4);
