@@ -10,7 +10,6 @@ public class StockExchange {
 
   public ArrayList<Population.Client> clients = new ArrayList<>();
   private static ArrayList<Trade> trades = new ArrayList<>();
-  private static RiskManager manager = new RiskManager();
   public static int tradenbcount;
   public int pdtLosers = 0;
   public int lowNetWorths = 0;
@@ -21,7 +20,6 @@ public class StockExchange {
   public int competitors = 0;
 
   public StockExchange(String csvFile, int competitors) {
-//    pop = new Population();
     readTrades(trades, csvFile);
     setClients(clients, (tradenbcount/4));
     this.competitors = competitors;
@@ -36,11 +34,8 @@ public class StockExchange {
         // use comma as separator
         if(line.contains("TRADE NB") || line.contains("TRADE")){
           Trade t = new Trade(line);
-          //manager.checkRisk(t);
           trades.add(t);
-          //System.out.println(line);
           String []a = line.replace(" ", "").split(",");
-          //System.out.println(Arrays.toString(a));
           if(a[1].contains("TRADENB")){
             incNBCount();
           }
@@ -50,11 +45,7 @@ public class StockExchange {
       e.printStackTrace();
     }
   }
-  public static void loop(){
-    for (int x = 0; x < 10; x++){
-      x =2;
-    }
-  }
+
   public void assignTrade(int populationSize, int competitors, BufferedWriter out) throws IOException {
     Rand randomint = new Rand();
     Random nextclient = new Random();
@@ -71,9 +62,7 @@ public class StockExchange {
 
 
         int multiplier = 1;
-        //System.out.println(trade.toString());
         Population.Client [] clientarray = new Population.Client[competitors];
-        //Rand r = new Rand();
         for(int x = 0; x < clientarray.length; x++){ // create x number of clients
           clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *mean+stddev) % populationSize)));
         }
@@ -83,17 +72,11 @@ public class StockExchange {
             return Integer.compare(o1.risk.riskLevel, o2.risk.riskLevel);
           }
         });
-        //loop();
         boolean tradeResolved = false;
         trade.startTimer();
         while(!tradeResolved) {
 
           for (Population.Client client : clientarray) { // loop through each client
-            if (client.getID() > (int)(StockExchange.tradenbcount *0.01) && client.getID() <= (int)(StockExchange.tradenbcount *0.57)) {
-              //Thread.sleep(0, 2);
-            } else if (client.getID() > (int)(StockExchange.tradenbcount *0.57)) {
-              //Thread.sleep(0, 4);
-            }
             int clientid = client.getID();
             if (!client.pdt) {
               if (Math.abs(transactioncost) < client.netWorth) {
@@ -105,7 +88,6 @@ public class StockExchange {
                 }
                 client.numberOfTrades++;
                 trade.endTimer(tradenbcount / 4, client);
-                //System.out.println(trade.timestamp);
                 client.tradesmade.add(trade);
                 clients.set(clientid, client);
                 trade.client = client;
@@ -118,14 +100,12 @@ public class StockExchange {
                 lowNetWorths++;
                 // skip to the next client
                 client.risk.increaseRisk();
-                //client.tradesfailed.add(trade);
                 clients.set(client.getID(), client);
               }
             } else {
               if (client.numberOfTrades < 3) {
                 if (Math.abs(transactioncost) < client.netWorth) {
                   client.netWorth = client.netWorth - transactioncost;
-                  //client.risk.decreaseRisk();
                   if (client.netWorth > 25000.0) {
                     client.pdt = false;
                   } else {
@@ -133,7 +113,6 @@ public class StockExchange {
                   }
                   client.numberOfTrades++;
                   trade.endTimer(tradenbcount / 4, client);
-                  //System.out.println(trade.timestamp);
                   client.tradesmade.add(trade);
                   clients.set(clientid, client);
                   trade.client = client;
@@ -145,7 +124,6 @@ public class StockExchange {
                 } else {
                   lowNetWorths++;
                   // skip to the next client
-                  //client.tradesfailed.add(trade);
                   client.risk.increaseRisk();
                   clients.set(client.getID(), client);
                 }
@@ -153,7 +131,6 @@ public class StockExchange {
                 // skip to the next client
                 pdtLosers++;
                 client.risk.increaseRisk();
-                //client.tradesfailed.add(trade);
                 clients.set(client.getID(), client);
               }
             }
@@ -163,20 +140,11 @@ public class StockExchange {
             }
           }
           for (int x = 0; x < clientarray.length; x++) { // create x number of clients
-            //clientarray[x] = clients.get( getClientID(randomint.next()));
             clientarray[x] = clients.get(Math.abs((int)((nextclient.nextGaussian() *mean+stddev) % populationSize)));
-            //clientarray[x].risk.setRisk(r.next());
           }
         }
         multiplier++;
-      }else{
-        if(trade.tradeType){
-          //System.out.println("Price Time Priority, the market price has changed, order cannot be filled.");
-        }else{
-          //System.out.println("Price Time Priority, the market price has changed, order cannot be filled.");
-        }
       }
-
     }
     for(int i = 0; i < clients.size(); i++) {
       clientsPerRisk[clients.get(i).risk.riskLevel]++;
@@ -217,7 +185,6 @@ public class StockExchange {
     int i = -1;
     while(i++ < popSize){
       clients.add(Population.createClient());
-      //System.out.println(clients.get(i));
     }
 
   }
@@ -323,26 +290,6 @@ public class StockExchange {
     out.write("\t" + 17 + "\t" + Arrays.toString(CIinterval(target17)) + "\n");
     out.write("\t" + 18 + "\t" + Arrays.toString(CIinterval(target18)) + "\n");
     out.write("\t" + 19 + "\t" + Arrays.toString(CIinterval(target19)) + "\n");
-//
-//    System.out.println("95% CI for risk 1: "+Arrays.toString(CIinterval(target1)));
-//    System.out.println("95% CI for risk 2: "+Arrays.toString(CIinterval(target2)));
-//    System.out.println("95% CI for risk 3: "+Arrays.toString(CIinterval(target3)));
-//    System.out.println("95% CI for risk 4: "+Arrays.toString(CIinterval(target4)));
-//    System.out.println("95% CI for risk 5: "+Arrays.toString(CIinterval(target5)));
-//    System.out.println("95% CI for risk 6: "+Arrays.toString(CIinterval(target6)));
-//    System.out.println("95% CI for risk 7: "+Arrays.toString(CIinterval(target7)));
-//    System.out.println("95% CI for risk 8: "+Arrays.toString(CIinterval(target8)));
-//    System.out.println("95% CI for risk 9: "+Arrays.toString(CIinterval(target9)));
-//    System.out.println("95% CI for risk 10: "+Arrays.toString(CIinterval(target10)));
-//    System.out.println("95% CI for risk 11: "+Arrays.toString(CIinterval(target11)));
-//    System.out.println("95% CI for risk 12: "+Arrays.toString(CIinterval(target12)));
-//    System.out.println("95% CI for risk 13: "+Arrays.toString(CIinterval(target13)));
-//    System.out.println("95% CI for risk 14: "+Arrays.toString(CIinterval(target14)));
-//    System.out.println("95% CI for risk 15: "+Arrays.toString(CIinterval(target15)));
-//    System.out.println("95% CI for risk 16: "+Arrays.toString(CIinterval(target16)));
-//    System.out.println("95% CI for risk 17: "+Arrays.toString(CIinterval(target17)));
-//    System.out.println("95% CI for risk 18: "+Arrays.toString(CIinterval(target18)));
-//    System.out.println("95% CI for risk 19: "+Arrays.toString(CIinterval(target19)));
 
     double sum = 0, largestGains = 0, largestLoss = 0;
     for(Population.Client c: this.clients){
@@ -364,11 +311,8 @@ public class StockExchange {
         tradecost+= (t.price*t.shares);
       }
     }
+
     out.write("Average trade cost per client: $"+tradecost/this.clients.size() + "\n");
-    //System.out.println(trades.toString());
-    //System.out.println(this.clients);
-    //System.out.println(Math.max(this.clients.));
-    //assignTrade();
     Population.resetIDs();
     tradenbcount = 0;
     out.close();

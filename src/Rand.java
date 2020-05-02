@@ -6,7 +6,7 @@ public class Rand {
     long x;
 
     public Rand(){
-        x = 69 ;
+        x = 88 ;
     }
 
     double next() {

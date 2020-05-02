@@ -34,7 +34,6 @@ public class Data {
     public Double mean() {
         Double sum = 0.0;
         for(int i = 0; i < this.data.size(); i++) {
-            //System.out.println(this.data.get(i));
             sum += this.data.get(i);
         }
         return sum / this.data.size();
@@ -81,17 +80,4 @@ public class Data {
     public String toString() {
         return this.metricLabel + " " + this.metric + "\n\t\t(stddev:\t" + this.stddev() + ")";
     }
-    /*
-    Data to record:
-    avg time to trade execution.
-    Time to execute trade as a function of risk
-    number of times a client is rejected due to
-        pdt
-        cant afford
-
-    avg amount of shares traded
-    avg price of shares traded
-
-     */
-
 }
