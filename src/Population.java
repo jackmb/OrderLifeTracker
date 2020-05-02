@@ -30,11 +30,11 @@ public class Population {
             //System.out.println(Brokerage.tradenbcount);
             if(id == 0){
                 return 1000000000.00;
-            }else if (id >= 1 && id < (int)(Brokerage.tradenbcount *0.01)) {
+            }else if (id >= 1 && id < (int)(StockExchange.tradenbcount *0.01)) {
                 double x = 1;
                 while (x < 5000000.0) x = Math.abs(r.nextGaussian() * 10000000.0 + 3000000.0);
                 return x;
-            }else if (id >= (int)(Brokerage.tradenbcount *0.01) && id < (int)(Brokerage.tradenbcount *0.57)){//else if (id >= 62 && id < 3574){ // top 57% , unlimited trades
+            }else if (id >= (int)(StockExchange.tradenbcount *0.01) && id < (int)(StockExchange.tradenbcount *0.57)){//else if (id >= 62 && id < 3574){ // top 57% , unlimited trades
                 double x = 1;
                 while (x < 25000.0) x = Math.abs(r.nextGaussian() * 50000.0 + 8333.33);
                 //while (x < 250000.0) x = Math.abs(r.nextGaussian() * 200000.0 + 33333.33);
