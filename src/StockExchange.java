@@ -5,7 +5,7 @@ import java.util.Comparator;
 import java.util.Random;
 
 
-public class Brokerage {
+public class StockExchange {
 
 
   public ArrayList<Population.Client> clients = new ArrayList<>();
@@ -20,7 +20,7 @@ public class Brokerage {
   public int[] clientsPerRisk = {0, 0, 0, 0, 0, 0, 0, 0, 0 , 0, 0, 0, 0, 0,0,0,0,0,0,0,0,0,0,0,0};
   public int competitors = 0;
 
-  public Brokerage(String csvFile, int competitors) {
+  public StockExchange(String csvFile, int competitors) {
 //    pop = new Population();
     readTrades(trades, csvFile);
     setClients(clients, (tradenbcount/4));
@@ -89,9 +89,9 @@ public class Brokerage {
         while(!tradeResolved) {
 
           for (Population.Client client : clientarray) { // loop through each client
-            if (client.getID() > (int)(Brokerage.tradenbcount *0.01) && client.getID() <= (int)(Brokerage.tradenbcount *0.57)) {
+            if (client.getID() > (int)(StockExchange.tradenbcount *0.01) && client.getID() <= (int)(StockExchange.tradenbcount *0.57)) {
               //Thread.sleep(0, 2);
-            } else if (client.getID() > (int)(Brokerage.tradenbcount *0.57)) {
+            } else if (client.getID() > (int)(StockExchange.tradenbcount *0.57)) {
               //Thread.sleep(0, 4);
             }
             int clientid = client.getID();
