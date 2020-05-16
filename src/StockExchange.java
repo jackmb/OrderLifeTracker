@@ -193,81 +193,81 @@ public class StockExchange {
     assignTrade(tradenbcount/4, competitors, out);
     double[] target = new double[this.timePerRisk[0].data.size()];
     for (int i = 0; i < target.length; i++) {
-      target[i] = this.timePerRisk[0].data.get(i);                // java 1.5+ style (outboxing)
+      target[i] = this.timePerRisk[0].data.get(i);
     }
     double[] target1 = new double[this.timePerRisk[1].data.size()];
     for (int i = 0; i < target1.length; i++) {
-      target1[i] = this.timePerRisk[1].data.get(i);                // java 1.5+ style (outboxing)
+      target1[i] = this.timePerRisk[1].data.get(i);
     }
     double[] target2 = new double[this.timePerRisk[2].data.size()];
     for (int i = 0; i < target2.length; i++) {
-      target2[i] = this.timePerRisk[2].data.get(i);                // java 1.5+ style (outboxing)
+      target2[i] = this.timePerRisk[2].data.get(i);
     }
     double[] target3 = new double[this.timePerRisk[3].data.size()];
     for (int i = 0; i < target3.length; i++) {
-      target3[i] = this.timePerRisk[3].data.get(i);                // java 1.5+ style (outboxing)
+      target3[i] = this.timePerRisk[3].data.get(i);
     }
     double[] target4 = new double[this.timePerRisk[4].data.size()];
     for (int i = 0; i < target4.length; i++) {
-      target4[i] = this.timePerRisk[4].data.get(i);                // java 1.5+ style (outboxing)
+      target4[i] = this.timePerRisk[4].data.get(i);
     }
     double[] target5 = new double[this.timePerRisk[5].data.size()];
     for (int i = 0; i < target5.length; i++) {
-      target5[i] = this.timePerRisk[5].data.get(i);                // java 1.5+ style (outboxing)
+      target5[i] = this.timePerRisk[5].data.get(i);
     }
     double[] target6 = new double[this.timePerRisk[6].data.size()];
     for (int i = 0; i < target6.length; i++) {
-      target6[i] = this.timePerRisk[6].data.get(i);                // java 1.5+ style (outboxing)
+      target6[i] = this.timePerRisk[6].data.get(i);
     }
     double[] target7 = new double[this.timePerRisk[7].data.size()];
     for (int i = 0; i < target7.length; i++) {
-      target7[i] = this.timePerRisk[7].data.get(i);                // java 1.5+ style (outboxing)
+      target7[i] = this.timePerRisk[7].data.get(i);
     }
     double[] target8 = new double[this.timePerRisk[8].data.size()];
     for (int i = 0; i < target8.length; i++) {
-      target8[i] = this.timePerRisk[8].data.get(i);                // java 1.5+ style (outboxing)
+      target8[i] = this.timePerRisk[8].data.get(i);
     }
     double[] target9 = new double[this.timePerRisk[9].data.size()];
     for (int i = 0; i < target9.length; i++) {
-      target9[i] = this.timePerRisk[9].data.get(i);                // java 1.5+ style (outboxing)
+      target9[i] = this.timePerRisk[9].data.get(i);
     }
     double[] target10 = new double[this.timePerRisk[10].data.size()];
     for (int i = 0; i < target10.length; i++) {
-      target10[i] = this.timePerRisk[10].data.get(i);                // java 1.5+ style (outboxing)
+      target10[i] = this.timePerRisk[10].data.get(i);
     }
     double[] target11 = new double[this.timePerRisk[11].data.size()];
     for (int i = 0; i < target11.length; i++) {
-      target11[i] = this.timePerRisk[11].data.get(i);                // java 1.5+ style (outboxing)
+      target11[i] = this.timePerRisk[11].data.get(i);
     }
     double[] target12 = new double[this.timePerRisk[12].data.size()];
     for (int i = 0; i < target12.length; i++) {
-      target12[i] = this.timePerRisk[12].data.get(i);                // java 1.5+ style (outboxing)
+      target12[i] = this.timePerRisk[12].data.get(i);
     }
     double[] target13 = new double[this.timePerRisk[13].data.size()];
     for (int i = 0; i < target13.length; i++) {
-      target13[i] = this.timePerRisk[13].data.get(i);                // java 1.5+ style (outboxing)
+      target13[i] = this.timePerRisk[13].data.get(i);
     }double[] target14 = new double[this.timePerRisk[14].data.size()];
     for (int i = 0; i < target14.length; i++) {
-      target14[i] = this.timePerRisk[14].data.get(i);                // java 1.5+ style (outboxing)
+      target14[i] = this.timePerRisk[14].data.get(i);
     }double[] target15 = new double[this.timePerRisk[15].data.size()];
     for (int i = 0; i < target15.length; i++) {
-      target15[i] = this.timePerRisk[15].data.get(i);                // java 1.5+ style (outboxing)
+      target15[i] = this.timePerRisk[15].data.get(i);
     }
     double[] target16 = new double[this.timePerRisk[16].data.size()];
     for (int i = 0; i < target16.length; i++) {
-      target16[i] = this.timePerRisk[16].data.get(i);                // java 1.5+ style (outboxing)
+      target16[i] = this.timePerRisk[16].data.get(i);
     }
     double[] target17 = new double[this.timePerRisk[17].data.size()];
     for (int i = 0; i < target17.length; i++) {
-      target17[i] = this.timePerRisk[17].data.get(i);                // java 1.5+ style (outboxing)
+      target17[i] = this.timePerRisk[17].data.get(i);
     }
     double[] target18 = new double[this.timePerRisk[18].data.size()];
     for (int i = 0; i < target18.length; i++) {
-      target18[i] = this.timePerRisk[18].data.get(i);                // java 1.5+ style (outboxing)
+      target18[i] = this.timePerRisk[18].data.get(i);
     }
     double[] target19 = new double[this.timePerRisk[19].data.size()];
     for (int i = 0; i < target19.length; i++) {
-      target19[i] = this.timePerRisk[19].data.get(i);                // java 1.5+ style (outboxing)
+      target19[i] = this.timePerRisk[19].data.get(i);
     }
     out.write("95% Confidence intervals for risk:\n");
     out.write("\t" + 0 + "\t" + Arrays.toString(CIinterval(target)) + "\n");
